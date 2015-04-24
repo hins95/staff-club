@@ -12,20 +12,20 @@ app.config(function ($mdThemingProvider, $locationProvider) {
     .controller('LinkMenuCtrl', function ($scope) {
     $scope.menuLinks = [
         {
-            name: 'PolyU Calender',
-            href: 'https://www.polyu.edu.hk/as/students/AC.pdf'
+            name: 'Home',
+            href: 'index.php'
         },
         {
-            name: 'PolyU Homepage',
-            href: 'http://www.polyu.edu.hk/'
+            name: 'Login',
+            href: 'login.php'
         },
         {
-            name: 'Healthy LifeStyle',
-            href: 'https://www40.polyu.edu.hk/saohls/'
+            name: 'Register',
+            href: 'reg.php'
         },
         {
-            name: 'Debit Note Info',
-            href: 'http://www.polyu.edu.hk/fo/internet/student/'
+            name: 'Sport Course',
+            href: 'view-course.php?type=sport'
         }
     ];
 })
@@ -35,10 +35,6 @@ app.config(function ($mdThemingProvider, $locationProvider) {
             name: 'Home page',
             href: 'home.html'
         },
-        //            {
-        //                name: 'Login page',
-        //                href: 'login.html'
-        //            },
         {
             name: 'Subject Search',
             href: 'search-subject.html'
