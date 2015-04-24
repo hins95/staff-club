@@ -1,5 +1,4 @@
 <html lang="en" ng-app="StaffClubApp">
-
     <head>
         <base href="/staff-club/">
         <link rel="stylesheet" href="./stylesheet/main.css">
@@ -8,13 +7,14 @@
         <!--<meta name="viewport" content="initial-scale=1, maximum-scale=1" />-->
         <title>Staff Club > Login</title>
     </head>
-
     <body layout="column" ng-controller="AppCtrl">
         <div layout="row" flex>
             <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-is-locked-open="1">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2><span>Poly U Staff Club</span></h2>
+                        <h2>
+                            <span>Poly U Staff Club</span>
+                        </h2>
                     </div>
                 </md-toolbar>
                 <md-list ng-controller="LinkMenuCtrl">
@@ -29,22 +29,15 @@
                         </a>
                     </md-item>
                 </md-list>
-                <md-content class="md-padding">
-                    <md-button ng-click="toggleSidenav('left')" class="md-primary" hide-gt-sm>
-                        Close Sidenav Left
-                    </md-button>
-                </md-content>
             </md-sidenav>
             <div flex id="content">
                 <md-toolbar layout="row">
-                    <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
-                        <span class="visually-hidden">Menu</span>
-                    </button>
                     <h1 class="md-toolbar-tools" layout-align-gt-sm="left">Login</h1>
+                    1234
                 </md-toolbar>
-
                 <md-content layout="column" class="md-padding" ng-controller="LoginCtrl">
-                    <section data-ng-init="showMessageToast(message)" ng-if="message"></section>
+                    <section data-ng-init="showMessageToast('loginAlready')" ng-if="staff_id!=null"></section>
+                    <section ng-if="staff_id!=null">You are currently logined as {{staff_id}}.</section>
                     <section id="bottom">
                         <h2 class="md-title">Account Login</h2>
                         <form name="loginForm" ng-model="login.form" ng-submit="submit()">
@@ -60,7 +53,8 @@
                                 <md-button class="md-raised md-primary" ng-type="submit">Login</md-button>
                             </section>
                         </form>
-                        {{message}}
+                        {{staff_id}}
+
                     </section>
                 </md-content>
             </div>
@@ -69,15 +63,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
-
         <script src="http://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0-rc.0/angular-route.min.js"></script>
         <script src="./script/main.js"></script>
         <!-- php json goes here -->
         <script>
             //loginError = true;
-            app.controller('AppCtrl', function ($scope, $mdToast, $location) {
-                $scope.message = $location.search()['msg'];
+            app.controller('AppCtrl', function ($scope, $mdToast, $location, $http, $mdDialog) {
+                $scope.staff_id = null;
+                $http.get('metadata.php').
+                success(function(data, status, headers, config) {
+                    $scope.staff_id = data.staff_id;
+                });
                 $scope.showMessageToast = function (message) {
                     if (message == 'loginSuccess') {
                         $mdToast.show(
@@ -85,7 +82,8 @@
                             .content('Login Success!')
                             .position('top right')
                             .action('OK')
-                        ).then($location.url('index.php?msg=loginSuccess'));
+                            //).then($location.url('index.html?msg=loginSuccess'))
+                        ).then($scope.isLogin = true);
                     } else if (message == 'loginError') {
                         $mdToast.show(
                             $mdToast.simple()
@@ -93,10 +91,25 @@
                             .position('top right')
                             .action('OK')
                         ).then($location.url('login.html?msg=loginError'));
+                    } else if (message == 'loginAlready') {
+                        var confirm = $mdDialog.alert()
+                            .title('Message')
+                            .content('You have already logged in.')
+                            .ariaLabel('Message - Login Already')
+                            .ok('Got it!');
+                        $mdDialog.show(confirm)
+                            .then(function() {
+                                $location.url('index.html?msg=loginAlready');
+                            });
                     }
                 };
+                $scope.isLogin = false;
+                $scope.message = $location.search()['msg'];
+                if ($scope.message) {
+                    $scope.showMessageToast($scope.message);
+                }
             })
-            .controller('LoginCtrl', function ($scope, $mdToast, $http, $mdToast) {
+            .controller('LoginCtrl', function ($scope, $mdToast, $http, $mdToast, $mdDialog, $location) {
                 $scope.submit = function() {
                     $http.post('login.php', {
                         staff_id: $scope.login.staff_id,
@@ -109,5 +122,4 @@
             })
         </script>
     </body>
-
 </html>

@@ -1,10 +1,23 @@
-var app = angular.module('StaffClubApp', ['ngMaterial']);
-app.config(function ($mdThemingProvider, $locationProvider) {
+var app = angular.module('StaffClubApp', ['ngMaterial', 'ngRoute']);
+app.config(function ($mdThemingProvider, $locationProvider, $routeProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('blue')
         .accentPalette('brown');
 
     $locationProvider.html5Mode(true);
+
+    $routeProvider.
+      when('/home', {
+        templateUrl: 'home.html',
+        controller: 'AppCtrl'
+      }).
+      when('/login', {
+        templateUrl: 'login.html',
+        controller: 'AppCtrl'
+      }).
+      otherwise({
+        redirectTo: '/home'
+      });
 })
 
     .controller('AppCtrl', function ($scope) {
@@ -13,15 +26,15 @@ app.config(function ($mdThemingProvider, $locationProvider) {
     $scope.menuLinks = [
         {
             name: 'Home',
-            href: 'index.php'
+            href: 'index.html'
         },
         {
             name: 'Login',
-            href: 'login.php'
+            href: 'login.html'
         },
         {
             name: 'Register',
-            href: 'reg.php'
+            href: 'reg.html'
         },
         {
             name: 'Sport Course',
