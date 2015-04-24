@@ -31,17 +31,21 @@
                 </md-list>
             </md-sidenav>
             <div flex id="content">
-                <md-toolbar layout="row">
+                <md-toolbar layout="row" flex class="fill-height">
                     <h1 class="md-toolbar-tools" layout-align-gt-sm="left">Login</h1>
-                    1234
+                    <span flex></span>
+                    <span class="ng-binding ng-scope">
+                        1234
+                    </span>
                 </md-toolbar>
                 <md-content layout="column" class="md-padding" ng-controller="LoginCtrl">
                     <section data-ng-init="showMessageToast('loginAlready')" ng-if="staff_id!=null"></section>
                     <section ng-if="staff_id!=null">You are currently logined as {{staff_id}}.</section>
-                    <section id="bottom">
+                    <section>
                         <h2 class="md-title">Account Login</h2>
                         <form name="loginForm" ng-model="login.form" ng-submit="submit()">
-                            <section layout="column" layout-align="space-around" flex>
+                            <section layout="column">
+                                <section layout="column">
                                 <md-input-container>
                                     <label>Staff Number</label>
                                     <input required name="staff_id" ng-model="login.staff_id">
@@ -50,11 +54,112 @@
                                     <label>Password</label>
                                     <input required type="password" name="password" ng-model="login.password">
                                 </md-input-container>
+                                </section>
+                                <section layout="row">
                                 <md-button class="md-raised md-primary" ng-type="submit">Login</md-button>
+                                </section>
                             </section>
                         </form>
-                        {{staff_id}}
-
+                    </section>
+                    <section ng-controller="RegCtrl">
+                        <h2 class="md-title">Register for a non-membership account</h2>
+                        <form name="loginForm" ng-model="register.form" ng-submit="submit()">
+                            <section layout="column">
+                                <section layout="row">
+                                <md-input-container flex>
+                                    <label>Staff Number</label>
+                                    <input required name="staff_id" ng-model="reg.staff_id">
+                                </md-input-container>
+                                    </section>
+                                <section layout="row">
+                                <md-input-container flex>
+                                    <label>Password</label>
+                                    <input required type="password" ng-model="reg.password">
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Re-type Password</label>
+                                    <input required type="password" ng-model="reg.password2">
+                                </md-input-container>
+                                </section>
+                                <section layout="row">
+                                    <md-select placeholder="Title" ng-model="reg.title" required>
+                                        <md-option value="1">Prof.</md-option>
+                                        <md-option value="2">Dr.</md-option>
+                                        <md-option value="3">Mr.</md-option>
+                                        <md-option value="4">Mrs.</md-option>
+                                        <md-option value="5">Ms</md-option>
+                                    </md-select>
+                                    <md-input-container flex>
+                                        <label>Full Name</label>
+                                        <input required ng-model="reg.name">
+                                    </md-input-container>
+                                </section>
+                                <section layout="row">
+                                <md-input-container>
+                                    <label>Department</label>
+                                    <input ng-model="reg.department" required>
+                                </md-input-container>
+                                <md-select placeholder="Position Type" ng-model="reg.positionType">
+                                    <md-option value="1">Academic</md-option>
+                                    <md-option value="2">Non-academic</md-option>
+                                </md-select>
+                                <md-input-container flex>
+                                    <label>Position</label>
+                                    <input ng-model="reg.position">
+                                </md-input-container>
+                                </section>
+                                <section layout="row">
+                                <md-input-container flex>
+                                    <label>Email Address</label>
+                                    <input required type="email" ng-model="reg.email" flex>
+                                </md-input-container>
+                                <md-input-container>
+                                    <label>Office Number</label>
+                                    <input required type="tel" maxlength="8" ng-model="reg.contact.office">
+                                </md-input-container>
+                                <md-input-container>
+                                    <label>Mobile Number</label>
+                                    <input required type="tel" maxlength="8" ng-model="reg.contact.mobile">
+                                </md-input-container>
+                                </section>
+                                <section layout="row">
+                                <md-input-container flex>
+                                    <label>Emergency Contact Person</label>
+                                    <input ng-model="reg.contact.emergency.name">
+                                </md-input-container>
+                                <md-input-container>
+                                    <label>Emergency Contact Number</label>
+                                    <input type="tel" ng-model="reg.contact.emergency.mobile">
+                                </md-input-container>
+                                </section>
+                                <section layout="row">
+                                <md-button class="md-raised md-primary" ng-type="submit">Register</md-button>
+                                </section>
+                            </section>
+                        </form>
+                    </section>
+                    <section ng-controller="ActListCtrl">
+                        <h2 class="md-title">Acitivity List</h2>
+                        <section>
+                            <section layout="row" style="padding: 10px">
+                                <div flex="30">Name</div>
+                                <div flex="35">Organize date</div>
+                                <div flex="15">Deadline</div>
+                                <div flex="15">Status</div>
+                                <div flex="5">Detail</div>
+                            </section>
+                            <md-divider></md-divider>
+                            <section ng-repeat="act in actList">
+                            <div layout="row" style="padding: 10px">
+                                <div flex="30">{{act.name}}</div>
+                                <div flex="35"><span ng-repeat="actDate in act.date">{{actDate}}, </span></div>
+                                <div flex="15">{{act.deadline}}</div>
+                                <div flex="15">{{act.status}}</div>
+                                <div flex="5"><md-button ng-href="view-activity.html?id={{act.id}}">Detail</md-button></div>
+                            </div>
+                            <md-divider ng-if="!$last"></md-divider>
+                            </section>
+                        </section>
                     </section>
                 </md-content>
             </div>
@@ -66,60 +171,5 @@
         <script src="http://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0-rc.0/angular-route.min.js"></script>
         <script src="./script/main.js"></script>
-        <!-- php json goes here -->
-        <script>
-            //loginError = true;
-            app.controller('AppCtrl', function ($scope, $mdToast, $location, $http, $mdDialog) {
-                $scope.staff_id = null;
-                $http.get('metadata.php').
-                success(function(data, status, headers, config) {
-                    $scope.staff_id = data.staff_id;
-                });
-                $scope.showMessageToast = function (message) {
-                    if (message == 'loginSuccess') {
-                        $mdToast.show(
-                            $mdToast.simple()
-                            .content('Login Success!')
-                            .position('top right')
-                            .action('OK')
-                            //).then($location.url('index.html?msg=loginSuccess'))
-                        ).then($scope.isLogin = true);
-                    } else if (message == 'loginError') {
-                        $mdToast.show(
-                            $mdToast.simple()
-                            .content('Login failed!')
-                            .position('top right')
-                            .action('OK')
-                        ).then($location.url('login.html?msg=loginError'));
-                    } else if (message == 'loginAlready') {
-                        var confirm = $mdDialog.alert()
-                            .title('Message')
-                            .content('You have already logged in.')
-                            .ariaLabel('Message - Login Already')
-                            .ok('Got it!');
-                        $mdDialog.show(confirm)
-                            .then(function() {
-                                $location.url('index.html?msg=loginAlready');
-                            });
-                    }
-                };
-                $scope.isLogin = false;
-                $scope.message = $location.search()['msg'];
-                if ($scope.message) {
-                    $scope.showMessageToast($scope.message);
-                }
-            })
-            .controller('LoginCtrl', function ($scope, $mdToast, $http, $mdToast, $mdDialog, $location) {
-                $scope.submit = function() {
-                    $http.post('login.php', {
-                        staff_id: $scope.login.staff_id,
-                        password: $scope.login.password
-                    }).
-                    success(function(data, status, headers, config) {
-                        $scope.showMessageToast(data);
-                    });
-                };
-            })
-        </script>
     </body>
 </html>

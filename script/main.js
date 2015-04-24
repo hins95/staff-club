@@ -7,20 +7,80 @@ app.config(function ($mdThemingProvider, $locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
 
     $routeProvider.
-      when('/home', {
+    when('/home', {
         templateUrl: 'home.html',
         controller: 'AppCtrl'
-      }).
-      when('/login', {
+    }).
+    when('/login', {
         templateUrl: 'login.html',
         controller: 'AppCtrl'
-      }).
-      otherwise({
+    }).
+    otherwise({
         redirectTo: '/home'
-      });
+    });
 })
 
-    .controller('AppCtrl', function ($scope) {
+app.controller('AppCtrl', function ($scope, $mdToast, $location, $http, $mdDialog) {
+    $scope.staff_id = null;
+    $http.get('metadata.php').
+    success(function(data, status, headers, config) {
+        $scope.staff_id = data.staff_id;
+    });
+    $scope.showMessageToast = function (message) {
+        if (message == 'loginSuccess') {
+            $mdToast.show(
+                $mdToast.simple()
+                .content('Login Success!')
+                .position('top right')
+                .action('OK')
+                //).then($location.url('index.html?msg=loginSuccess'))
+            ).then($scope.isLogin = true);
+        } else if (message == 'loginError') {
+            $mdToast.show(
+                $mdToast.simple()
+                .content('Login failed!')
+                .position('top right')
+                .action('OK')
+            ).then($location.url('login.html?msg=loginError'));
+        } else if (message == 'loginAlready') {
+            var confirm = $mdDialog.alert()
+            .title('Message')
+            .content('You have already logged in.')
+            .ariaLabel('Message - Login Already')
+            .ok('Got it!');
+            $mdDialog.show(confirm)
+             //   .then(function() {
+            //    $location.url('index.html');
+            //}, function() {
+            //    $location.url('index.html');
+            //});
+            ;
+        }
+    };
+    $scope.isLogin = false;
+    $scope.message = $location.search()['msg'];
+    if ($scope.message) {
+        $scope.showMessageToast($scope.message);
+    }
+})
+    .controller('LoginCtrl', function ($scope, $mdToast, $http, $mdToast, $mdDialog, $location) {
+    $scope.submit = function() {
+        $http.post('login.php', {
+            staff_id: $scope.login.staff_id,
+            password: $scope.login.password
+        }).
+        success(function(data, status, headers, config) {
+            $scope.showMessageToast(data);
+        });
+    };
+})
+.controller('ActListCtrl', function ($scope, $http) {
+        $http.get('view-activity-list.php').
+        success(function(data, status, headers, config) {
+            $scope.actList = angular.fromJson(data);;
+        });
+})
+    .controller('RegCtrl', function ($scope) {
 })
     .controller('LinkMenuCtrl', function ($scope) {
     $scope.menuLinks = [
